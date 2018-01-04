@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
+from .models import Champion
 from rest_framework import viewsets
-from tutorial.quickstart.serializers import UserSerializer, GroupSerializer
+from tutorial.quickstart.serializers import UserSerializer, GroupSerializer, ChampionSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """ 
@@ -15,3 +16,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     """ 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+class ChampionViewSet(viewsets.ModelViewSet):
+    """ 
+    API endpoint that allows groups to be viewed or edited.
+    """ 
+    queryset = Champion.objects.all()
+    serializer_class = ChampionSerializer
