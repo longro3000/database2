@@ -76,12 +76,15 @@ WSGI_APPLICATION = 'tutorial.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+'default': {
+'ENGINE': 'django.db.backends.mysql',
+'NAME': 'e1601108_2018',
+'USER': 'e1601108',
+'PASSWORD': 'QAyDCB743kW6',
+'HOST': 'mysql.cc.puv.fi',
+'PORT': '3306', 
 }
-
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -120,6 +123,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+ os.path.join(BASE_DIR, "static"),
+ 'C:\temp\python_django_rest\static',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
