@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body
+            {
+                background-color: rgb(63, 63, 63);
+                font-family: Verdana, Geneva, sans-serif;
+            }
+            .dialog {
+                background-color: rgb(250,250,250);
+                margin-left: auto;
+                margin-right: auto;
+                width: 500px;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 5px 15px 15px rgb(20,20,20);
+            }
+            .remember
+            {
+                margin: 20px;
+                perspective: 600px;
+            }
+            .always-visible
+            {
+                border-bottom: 1px solid rgb(220,220,220);
+                padding: 5px;
+                border: 1px solid rgb(220,220,220);
+            }
+            .collapse{
+                border: 1px solid rgb(220,220,220);
+                border-top: 0px;
+                transition: all 0.35s;
+                transition-timing-function: cubic-bezier(0.730, 0.005, 0.265, 1.550); /* custom */
+                transform: rotateX(-90deg);
+                transform-style: preserve-3d;
+                transform-origin: 0px 0px;
+                height: 0px;
+                opacity: 0;
+            }
+            .collapse-visible
+            {
+                transform: rotateX(0deg);
+                opacity: 1;
+                height: 300px;
+            }
+            .phone
+            {
+                width: 238px;
+                padding: 10px;
+                border: 0px;
+                border-top: 1px solid rgb(220,220,220);
+            }
+			h1
+			{
+			color:orange;
+			}
+			table, th, td 
+			{
+			border: 1px solid black;
+			}
+			td, th {
+			padding-right:20px;
+			padding-left:20px;
+			}
+			th {
+			background-color: silver;
+			}
+        </style>
+    </head>
+<script>
+var arrayChampion,arrayItem;
+function init1()
+{
+	var request = new XMLHttpRequest();
+	request.open("GET", "http://localhost:8000/Champions/", false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send();
+	arrayChampion = JSON.parse(request.responseText);
+	var selectElement = document.getElementById("sel1");
+	var temp=document.getElementById("display1");
+	var display = "<table><tr><th>Name</th><th>Skills</th><th>Story</th></tr>";
+	var i, options="";
+	for(i = 0; i < arrayChampion.length; i++)
+	{
+		options = options + "<option>" + arrayChampion[i].name + "</option>";
+		display+="<tr><td>" + arrayChampion[i].name + "</td><td>" + arrayChampion[i].skills + "</td><td>"+arrayChampion[i].story +"</td></tr>";
+	}
+	display+="</table>";
+	selectElement.innerHTML = options;
+	temp.innerHTML=display;
+	
+}
+function putChampion()
+{
+	var Name=document.getElementById("nameChampion");
+	var Story=document.getElementById("storyChampion");
+	var Skill=document.getElementById("skillChampion");
+	var index = document.getElementById("sel1").selectedIndex;
+	var request = new XMLHttpRequest();
+	var url=""+arrayChampion[index].url;
+	var jsonData = '{"name":' + JSON.stringify(Name.value)+',"skills":' + JSON.stringify(Skill.value)+',"story":' + JSON.stringify(Story.value) + '}';
+	request.open("PUT", url, false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send(jsonData);
+	init1();
+}
+function deleteChampion()
+{
+	var index = document.getElementById("sel1").selectedIndex;
+	var request = new XMLHttpRequest();
+	var name=arrayChampion[index].name;
+	var url=""+arrayChampion[index].url;
+	var jsonData = '{"name":' + JSON.stringify(name) + '}';
+	request.open("DELETE", url, false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send(jsonData);
+	init1();
+} 
+
+function postChampion(){
+	var Name=document.getElementById("nameChampion");
+	var Story=document.getElementById("storyChampion");
+	var Skill=document.getElementById("skillChampion");
+	var jsonData = '{"name":' + JSON.stringify(Name.value)+',"skills":' + JSON.stringify(Skill.value)+',"story":' + JSON.stringify(Story.value) + '}';
+	var request = new XMLHttpRequest();
+	request.open("POST", "http://localhost:8000/Champions/", false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send(jsonData); 
+	init1();
+}
+//-----------------------------------------------------------------------------------------
+function init2()
+{
+	var request = new XMLHttpRequest();
+	request.open("GET", "http://localhost:8000/Items/", false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send();
+	arrayItem = JSON.parse(request.responseText);
+	var selectElement = document.getElementById("sel2");
+	var temp=document.getElementById("display2");
+	var display = "<table><tr><th>Name</th><th>Price</th><th>Passive</th></tr>";
+	var i, options="";
+	for(i = 0; i < arrayItem.length; i++)
+	{
+		options = options + "<option>" + arrayItem[i].name + "</option>";
+		display+="<tr><td>" + arrayItem[i].name + "</td><td>" + arrayItem[i].price + "</td><td>"+arrayItem[i].passive +"</td></tr>";
+	}
+	display+="</table>";
+	selectElement.innerHTML = options;
+	temp.innerHTML=display;
+	
+}
+function putItem()
+{
+	var Name=document.getElementById("nameItem");
+	var Price=document.getElementById("priceItem");
+	var Passive=document.getElementById("passiveItem");
+	var index = document.getElementById("sel2").selectedIndex;
+	var request = new XMLHttpRequest();
+	var url=""+arrayItem[index].url;
+	var jsonData = '{"name":' + JSON.stringify(Name.value)+',"price":' + JSON.stringify(Price.value)+',"passive":' + JSON.stringify(Passive.value) + '}';
+	request.open("PUT", url, false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send(jsonData);
+	init2();
+}
+function deleteItem()
+{
+	var index = document.getElementById("sel2").selectedIndex;
+	var request = new XMLHttpRequest();
+	var name=arrayItem[index].name;
+	var url=""+arrayItem[index].url;
+	var jsonData = '{"name":' + JSON.stringify(name) + '}';
+	request.open("DELETE", url, false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send(jsonData);
+	init2();
+} 
+
+function postItem(){
+	var Name=document.getElementById("nameItem");
+	var Price=document.getElementById("priceItem");
+	var Passive=document.getElementById("passiveItem");
+	var jsonData = '{"name":' + JSON.stringify(Name.value)+',"price":' + JSON.stringify(Price.value)+',"passive":' + JSON.stringify(Passive.value) + '}';
+	var request = new XMLHttpRequest();
+	request.open("POST", "http://localhost:8000/Items/", false);
+	request.setRequestHeader("Authorization", "Basic " + btoa("admin:password123"));
+	request.setRequestHeader("X-CSRFToken", readCookie("csrftoken"));
+	request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	request.send(jsonData); 
+	init2();
+}
+function readCookie(name) {
+ var nameEQ = encodeURIComponent(name) + "=";
+ var ca = document.cookie.split(';');
+ for (var i = 0; i < ca.length; i++) {
+ var c = ca[i];
+ while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+ if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+ }
+ return null;
+}
+function setVisible1()
+            {
+                document.getElementById("flip1").classList.toggle("collapse-visible");
+				init1();
+            }
+function setVisible2()
+            {
+                document.getElementById("flip2").classList.toggle("collapse-visible");
+				init2();
+            }
+</script>
+<body>
+ <div class="dialog">
+            <div class="remember">
+                <div class="always-visible">
+                    <input type="checkbox" onchange="setVisible1()"> <b>Champion Database</b>
+                </div>
+                <div class="collapse" id="flip1">
+                    <div>
+						<p id ="display1"></p><select id="sel1"></select>
+						<br>
+                        Champion name:<br>
+						<input type="text" id="nameChampion"><br>
+						Champion skill:<br>
+						<input type="text" id="skillChampion"><br>
+						Champion story:<br>
+						<input type="text" id="storyChampion">
+						<button onClick="postChampion()">Add Champion</button>
+						<br>
+						<button onClick="putChampion()">EDIT </button>
+						<br>
+						<button onclick="deleteChampion()">DELETE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+<div class="dialog">
+            <div class="remember">
+                <div class="always-visible">
+                    <input type="checkbox" onchange="setVisible2()"> <b>Item Database</b>
+                </div>
+                <div class="collapse" id="flip2">
+                    <div>
+                        <p id ="display2"></p><select id="sel2"></select>
+						<br>
+                        Item name:<br>
+						<input type="text" id="nameItem"><br>
+						Item price:<br>
+						<input type="text" id="priceItem"><br>
+						Item passive:<br>
+						<input type="text" id="passiveItem">
+						<button onClick="postItem()">Add Item</button>
+						<br>
+						<button onClick="putItem()">EDIT </button>
+						<br>
+						<button onclick="deleteItem()">DELETE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
